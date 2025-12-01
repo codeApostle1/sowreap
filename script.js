@@ -60,6 +60,8 @@ async function loadTotalHistory() {
     });
 
     let data = await res.json();
+    
+    data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     let box = document.getElementById("totalList");
     box.innerHTML = "";
@@ -204,6 +206,7 @@ async function loadAdmin() {
         let historyBox = document.getElementById("historyList");
 historyBox.innerHTML = "";
 
+data.sort((a, b) => new Date(b.date) - new Date(a.date));
 data.forEach(p => {
     historyBox.innerHTML += `
         <div class="card">
