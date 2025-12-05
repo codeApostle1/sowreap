@@ -1,5 +1,12 @@
 const API = "https://sowreap2.onrender.com";
 
+document.addEventListener("click", (e) => {
+  const dropdown = document.getElementById("dropdown");
+  if (!dropdown.contains(e.target)) {
+    dropdown.classList.add("hidden");
+  }
+});
+
 ////// LOGIN + SIGNUP + TOKEN SAVE
 
 // SIGN UP
@@ -50,6 +57,8 @@ async function login() {
 function toggleMenu() {
     document.getElementById("dropdown").classList.toggle("hidden");
 }
+
+
 
 //USERS CAN SEE OTHERS HISTORY
 async function loadTotalHistory() {
@@ -106,6 +115,11 @@ async function addPayment() {
     let amount = document.getElementById("amount").value;
     let note = document.getElementById("note").value;
 
+if(!amount || !note) {
+  alert('!!Please enter  Valid amount and note')
+  
+  return
+}
     let res = await fetch(API + "/payment/add", {
         method: "POST",
         headers: {
@@ -113,9 +127,16 @@ async function addPayment() {
             "authorization": localStorage.getItem("token")
         },
         body: JSON.stringify({ amount, note })
+        
+        
     });
+    
+    document.getElementById("amount").value = "";
+    document.getElementById("note").value = "";
 
     alert("Submitted! Waiting for admin approval.");
+    loadHistory();
+    
 }
 
 //// USER HISTORY
@@ -130,6 +151,7 @@ async function loadHistory() {
     let box = document.getElementById("history");
     box.innerHTML = "";
 
+     data.sort((a, b) => new Date(b.date) - new Date(a.date));
     data.forEach(p => {
         box.innerHTML += `
             <div class="card">
@@ -179,6 +201,7 @@ async function loadAdmin() {
 
     // Calculate total approved amount
     let total = data
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
         .filter(p => p.approved === true)
         .reduce((sum, payment) => sum + payment.amount, 0);
 
@@ -188,7 +211,7 @@ async function loadAdmin() {
     box.innerHTML = "";
 
     // Show pending approvals
-    data
+    data 
         .filter(p => !p.approved)
         .forEach(p => {
             box.innerHTML += `
@@ -212,7 +235,7 @@ data.forEach(p => {
         <div class="card">
             <b>User:</b> ${p.user.name}<br>
             <b>Amount:</b> ₦${p.amount}<br>
-            <b>Note:</b> ${p.note || '---'}<br>
+            <b>Note:</b> ${p.note || '...no notes'}<br>
             <b>Status:</b> ${p.approved ? "Approved" : "Pending"}<br>
             <b>Date:</b> ${new Date(p.date).toLocaleString()}
         </div>`;
@@ -337,3 +360,8 @@ async function updateLiveTotal() {
     let adminTotal = document.getElementById("liveTotalAdmin");
     if (adminTotal) adminTotal.innerText = data.total;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateLiveTotal();
+    loadGlobalTotal();
+});
