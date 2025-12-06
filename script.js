@@ -62,6 +62,7 @@ async function login() {
 
     if (!data.token) {
         alert("Wrong login details!");
+        hideLoading();
         return;
     }
 
