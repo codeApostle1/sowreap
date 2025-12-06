@@ -4,15 +4,46 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+       <style type="text/css" media="all">
+        body {
+    margin: 0;
+    padding: 0;
+    background: url("img/bg.png") no-repeat center center/cover;
+    height: 100vh;
+}
+
+/* Optional: dark overlay for better text readability */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5); /* adjust darkness */
+    pointer-events: none;
+    z-index: -100;
+}
+    </style>
+    
+    
 </head>
 
 <body>
+    
+    <!-- LOGIN CHECK SCRIPT -->
+<script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("You must log in first!");
+        window.location = "login.html";
+    }
+</script>
+    
 
 <div class="nav">
     <h2>User Dashboard</h2>
 
     <div class="menu">
-        <button onclick="toggleMenu()">☰</button>
+        <button class="dropdown-toggle" onclick="toggleMenu()">☰</button>
         <div id="dropdown" class="dropdown hidden">
             <a href="dashboard.html">Home</a>
             <a href="about.html">About</a>
@@ -26,15 +57,21 @@
 </div>
 
 
-<h2>Total Contribution So Far: ₦<span id="liveTotal">0</span></h2>
+<h2 class="heading">Total Contribution So Far: ₦<span id="liveTotal">0</span></h2>
 
-<h2>Total Contribution So Far: ₦<span id="globalTotal">0</span></h2>
+<h2 class="heading">Total Contribution So Far: ₦<span id="globalTotal">0</span></h2>
 
 
 <div class="container">
-    <h3>Enter Contribution</h3>
+    
+    <div class="enter-space">
+        <h3 class="enter-text">Enter Contribution</h3>
+        
+        <button onclick="loadHistory()" class="show">Show my payments</button>
+    </div>
 
-    <input id="amount" placeholder="Amount">
+
+    <input type="number" id="amount" placeholder="Amount">
     <input id="note" placeholder="Optional Note">
 
     <button onclick="addPayment()">Submit</button>

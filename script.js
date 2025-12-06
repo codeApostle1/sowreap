@@ -2,8 +2,8 @@ const API = "https://sowreap2.onrender.com";
 
 document.addEventListener("click", (e) => {
   const dropdown = document.getElementById("dropdown");
-  if (!dropdown.contains(e.target)) {
-    dropdown.classList.add("hidden");
+  if (!dropdown.contains(e.target) && !e.target.classList.contains("dropdown-toggle")) {
+      dropdown.classList.add("hidden");
   }
 });
 
@@ -198,10 +198,12 @@ async function loadAdmin() {
     });
 
     let data = await res.json();
-
+    
+    data.sort((a, b) => new Date(b.date) - new Date(a.date))
+    
     // Calculate total approved amount
     let total = data
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
+    
         .filter(p => p.approved === true)
         .reduce((sum, payment) => sum + payment.amount, 0);
 
@@ -211,7 +213,8 @@ async function loadAdmin() {
     box.innerHTML = "";
 
     // Show pending approvals
-    data 
+    data
+    
         .filter(p => !p.approved)
         .forEach(p => {
             box.innerHTML += `
@@ -229,7 +232,7 @@ async function loadAdmin() {
         let historyBox = document.getElementById("historyList");
 historyBox.innerHTML = "";
 
-data.sort((a, b) => new Date(b.date) - new Date(a.date));
+//data.sort((a, b) => new Date(b.date) - new Date(a.date));
 data.forEach(p => {
     historyBox.innerHTML += `
         <div class="card">
@@ -343,23 +346,23 @@ function logout() {
 
 ///TOTAL AUTO updateLiveTotal
 
-async function updateLiveTotal() {
-    let res = await fetch(API + "/payment/approved", {
-        headers: {
-            "authorization": localStorage.getItem("token")
-        }
-    });
-
-    let data = await res.json();
-
-    // User total
-    let userTotal = document.getElementById("liveTotal");
-    if (userTotal) userTotal.innerText = data.total;
-
-    // Admin total
-    let adminTotal = document.getElementById("liveTotalAdmin");
-    if (adminTotal) adminTotal.innerText = data.total;
-}
+        // async function updateLiveTotal() {
+        //     let res = await fetch(API + "/payment/approved", {
+        //         headers: {
+        //             "authorization": localStorage.getItem("token")
+        //         }
+        //     });
+        
+        //     let data = await res.json();
+        
+        //     // User total
+        //     let userTotal = document.getElementById("liveTotal");
+        //     if (userTotal) userTotal.innerText = data.total;
+        
+        //     // Admin total
+        //     let adminTotal = document.getElementById("liveTotalAdmin");
+        //     if (adminTotal) adminTotal.innerText = data.total;
+        // }
 
 document.addEventListener("DOMContentLoaded", () => {
     updateLiveTotal();

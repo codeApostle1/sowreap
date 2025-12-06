@@ -8,12 +8,21 @@
 </head>
 
 <body>
+    
+    <!-- LOGIN CHECK SCRIPT -->
+<script>
+    const token = localStorage.getItem("token");
+    if (!token) {
+        alert("You must log in first!");
+        window.location = "login.html";
+    }
+</script>
 
 <div class="nav">
     <h2>Contribution Chart</h2>
 
     <div class="menu">
-        <button onclick="toggleMenu()">☰</button>
+        <button class="dropdown-toggle" onclick="toggleMenu()">☰</button>
         <div id="dropdown" class="dropdown hidden">
             <a href="dashboard.html">Home</a>
                <a href="total-history.html">Total History</a>
