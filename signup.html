@@ -30,12 +30,18 @@ body::before {
 <div class="form-container">
     <h2>Create Account</h2>
 
-    <input class="register" id="name" placeholder="Enter name">
-    <input class="register" id="password" placeholder="Enter password" type="password">
+    <input class="register" id="name" placeholder="Enter name" required>
+    <input class="register" id="password" placeholder="Enter password" type="password" required>
 
     <button onclick="signup()">Create Account</button>
 
     <p>Already have an account? <a href="login.html">Sign in</a></p>
+    
+     <div id="loading" class="loading hidden">
+    <p><div class="box">
+        
+    </div> Loading...</p>
+</div>
 </div>
 
 <script src="script.js"></script>

@@ -44,10 +44,10 @@ body::before {
         <button class="dropdown-toggle" onclick="toggleMenu()">☰</button>
         <div id="dropdown" class="dropdown hidden">
             <a href="admin.html">Admin Home</a>
-            <a href="about.html">About</a>
-            <a href="#" onclick="loadHistory()">My History</a>
-            <a href="chart.html">Chart</a>
-            <a href="total-history.html">Total History</a>
+          
+           
+                      <!-- <a href="chart.html">Chart</a>
+  <a href="total-history.html">Total History</a> -->
             <a href="#" onclick="resetRecords()">Reset Records</a>
             <a href="#" onclick="logout()">Logout</a>
         </div>
@@ -59,19 +59,25 @@ body::before {
   <h2 class="heading">Live Contribution: ₦<span id="liveTotalAdmin">0</span></h2>
   <h2 class="heading">Total Contribution: ₦<span id="totalAmount">0</span></h2>
     <h3>Pending Approvals</h3>
+    
+    <div id="loading" class="loading hidden">
+    <p><div class="box">
+        
+    </div> Loading...</p>
+</div>
 
-    <div id="admin-list"></div>
+    <div id="admin-list">List loading...</div>
 </div>
 
 <h3>Full Contribution History</h3>
-<div id="historyList"></div>
+<div id="historyList">History Loading....</div>
 
 <script src="script.js">
   
 </script>
 
 <script>
-  loadAdmin();
+document.addEventListener("DOMContentLoaded", loadAdmin);
 </script>
 </body>
 </html>

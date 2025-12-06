@@ -1,11 +1,20 @@
 const API = "https://sowreap2.onrender.com";
 
+// document.addEventListener("click", (e) => {
+//   const dropdown = document.getElementById("dropdown");
+//   if (!dropdown.contains(e.target) && !e.target.classList.contains("dropdown-toggle")) {
+//       dropdown.classList.add("hidden");
+//   }
+// });
+
 document.addEventListener("click", (e) => {
   const dropdown = document.getElementById("dropdown");
+  if (!dropdown) return; // prevents crashing
+
   if (!dropdown.contains(e.target) && !e.target.classList.contains("dropdown-toggle")) {
       dropdown.classList.add("hidden");
   }
-});
+}); 
 
 ////// LOGIN + SIGNUP + TOKEN SAVE
 
@@ -13,12 +22,24 @@ document.addEventListener("click", (e) => {
 async function signup() {
     let name = document.getElementById("name").value;
     let password = document.getElementById("password").value;
+    
+    
+    
+    showLoading()
 
     let res = await fetch(API + "/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, password })
     });
+    
+    hideLoading()
+
+if(!res.ok) {
+    alert("user already exists")
+    return
+} 
+    
 
     alert("Account created!");
     window.location = "login.html";
@@ -28,6 +49,8 @@ async function signup() {
 async function login() {
     let name = document.getElementById("name").value;
     let password = document.getElementById("password").value;
+    
+    showLoading();
 
     let res = await fetch(API + "/auth/login", {
         method: "POST",
@@ -44,12 +67,17 @@ async function login() {
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.role);
+    
+    hideLoading();
+    
 
     if (data.role === "admin") {
         window.location = "admin.html";
     } else {
         window.location = "dashboard.html";
     }
+    
+    
 }
 
 ///// MENUE TOGHLE
@@ -62,13 +90,17 @@ function toggleMenu() {
 
 //USERS CAN SEE OTHERS HISTORY
 async function loadTotalHistory() {
+    showLoading()
     let res = await fetch(API + "/payment/global", {
         headers: {
             "authorization": localStorage.getItem("token")
         }
     });
+    
+    
 
     let data = await res.json();
+    hideLoading()
     
     data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -90,6 +122,11 @@ async function loadTotalHistory() {
 // VIEW LIVE totalList
 
 async function updateLiveTotal() {
+    
+
+    if (!localStorage.getItem("token")) return;
+    
+    
     let res = await fetch(API + "/payment/approved", {
         headers: {
             "authorization": localStorage.getItem("token")
@@ -112,6 +149,7 @@ async function updateLiveTotal() {
 //SUBMIT PAYMENT
 
 async function addPayment() {
+    
     let amount = document.getElementById("amount").value;
     let note = document.getElementById("note").value;
 
@@ -120,6 +158,8 @@ if(!amount || !note) {
   
   return
 }
+
+showLoading();
     let res = await fetch(API + "/payment/add", {
         method: "POST",
         headers: {
@@ -130,6 +170,7 @@ if(!amount || !note) {
         
         
     });
+    hideLoading();
     
     document.getElementById("amount").value = "";
     document.getElementById("note").value = "";
@@ -142,11 +183,17 @@ if(!amount || !note) {
 //// USER HISTORY
 
 async function loadHistory() {
+    
+    if (!localStorage.getItem("token")) return;
+    
+    showLoading()
     let res = await fetch(API + "/payment/history", {
         headers: { "authorization": localStorage.getItem("token") }
     });
 
     let data = await res.json();
+    
+    hideLoading()
 
     let box = document.getElementById("history");
     box.innerHTML = "";
@@ -263,6 +310,14 @@ async function rejectPay(id) {
     loadAdmin();
 }
 
+ // Show/hide loader
+    function showLoading() {
+        document.getElementById("loading").classList.remove("hidden");
+    }
+    function hideLoading() {
+        document.getElementById("loading").classList.add("hidden");
+    }
+
 
 /// RESET RECORDS
 
@@ -282,6 +337,8 @@ async function resetRecords() {
 
 /////USERS SEE GLOBAL historyBox
 async function loadGlobalTotal() {
+    if (!localStorage.getItem("token")) return;
+    
     let res = await fetch(API + "/payment/all", {
         headers: {
             "authorization": localStorage.getItem("token")
@@ -289,6 +346,7 @@ async function loadGlobalTotal() {
     });
 
     let data = await res.json();
+    console.log("DATA:", data);
 
     let total = data
         .filter(p => p.approved)
